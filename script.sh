@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Полный путь к папке с текущим скриптом
+# Full path to the folder with the current script
 DIRECTORY_WITH_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || exit "$?"
 
 function main() {
@@ -14,13 +14,6 @@ function main() {
     title_number="$(echo "${url_without_episode_number}" | sed -E 's/.*title_no=([0-9]+).*/\1/')" || return "$?"
     if [[ -z "${title_number}" ]]; then
         echo "Can't get title_no from provided URL!" >&2
-        return 1
-    fi
-
-    local is_tidy_installed
-    which "tidy" &> /dev/null && is_tidy_installed="1" || is_tidy_installed="0"
-    if ((!is_tidy_installed)); then
-        echo "You need to install tidy package!" >&2
         return 1
     fi
 
@@ -61,8 +54,10 @@ function main() {
         if [[ ! -f "${episode_file_path}" ]]; then
             echo " will be downloaded!" >&2
             html="$(curl --silent -L "${url}")" || return "$?"
+
+            # Save HTML to file
             # shellcheck disable=SC2320
-            echo "${html}" | tidy -quiet --show-body-only yes -raw -wrap 0 -ashtml --drop-empty-elements no &> "${episode_file_path}"
+            echo "${html}" > "${episode_file_path}" || return "$?"
         else
             echo " already downloaded!" >&2
             html="$(cat "${episode_file_path}")" || return "$?"
@@ -72,12 +67,9 @@ function main() {
         # ========================================
         # Get images links from HTML
         # ========================================
-        local line_with_img_tags
-        local image_list_tag_id="_imageList"
-        line_with_img_tags="$(echo "${html}" | sed -En "/${image_list_tag_id}/p")" || return "$?"
-
         local image_links
-        image_links="$(echo "${line_with_img_tags}" | sed -E 's/>\s*<img /\n/g' | sed -En 's/^.*data-url="([^"]+)".*/\1/p' | uniq)" || return "$?"
+        # We assume that all needed img tags have "ondragstart" attribute, when other img tags have not
+        image_links="$(echo "${html}" | sed -En 's/^.*<img[^>]+data-url="([^"]+)"[^>]+ondragstart[^>]+>$/\1/p')" || return "$?"
 
         if [[ -z "${image_links}" ]]; then
             echo "- Image list for episode ${episode_number} is empty!" >&2
@@ -135,7 +127,7 @@ function main() {
 }
 
 # DEBUG: Unordinary
-main "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=" "10" || exit "$?"
+main "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=" "312" || exit "$?"
 
 # NO DEBUG:
 # main "$@" || exit "$?"
