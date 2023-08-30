@@ -17,12 +17,12 @@ function main() {
         return 1
     fi
 
-    local temp_dir="${DIRECTORY_WITH_SCRIPT}/downloads"
-    if [[ ! -d "${temp_dir}" ]]; then
-        mkdir "${temp_dir}" || return "$?"
+    local downloads_dir="${DIRECTORY_WITH_SCRIPT}/downloads"
+    if [[ ! -d "${downloads_dir}" ]]; then
+        mkdir "${downloads_dir}" || return "$?"
     fi
 
-    local webtoon_dir="${temp_dir}/${title_number}"
+    local webtoon_dir="${downloads_dir}/${title_number}"
     if [[ ! -d "${webtoon_dir}" ]]; then
         mkdir "${webtoon_dir}" || return "$?"
     fi
@@ -77,7 +77,7 @@ function main() {
         fi
 
         declare -a image_links_array=()
-        # Преобразование текста из строк в массив
+        # Converting text from strings to an array
         mapfile -t image_links_array <<< "${image_links}"
         # ========================================
 
@@ -126,8 +126,4 @@ function main() {
     return 0
 }
 
-# DEBUG: Unordinary
-main "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=" "312" || exit "$?"
-
-# NO DEBUG:
-# main "$@" || exit "$?"
+main "$@" || exit "$?"
