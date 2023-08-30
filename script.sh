@@ -3,6 +3,9 @@
 # Full path to the folder with the current script
 DIRECTORY_WITH_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || exit "$?"
 
+# Continue parsing episodes if encountered error
+IS_CONTINUE_ON_EMPTY_IMAGES_LIST_ERROR="1"
+
 function main() {
     local url_without_episode_number="${1}" && shift
     if [[ -z "${url_without_episode_number}" ]]; then
@@ -73,7 +76,11 @@ function main() {
 
         if [[ -z "${image_links}" ]]; then
             echo "- Image list for episode ${episode_number} is empty!" >&2
-            return 1
+            if ((IS_CONTINUE_ON_EMPTY_IMAGES_LIST_ERROR)); then
+                continue
+            else
+                return 1
+            fi
         fi
 
         declare -a image_links_array=()
@@ -83,7 +90,11 @@ function main() {
 
         if [[ "${#image_links_array[@]}" -eq 0 ]]; then
             echo "- Images for episode ${episode_number} were not found!" >&2
-            return 1
+            if ((IS_CONTINUE_ON_EMPTY_IMAGES_LIST_ERROR)); then
+                continue
+            else
+                return 1
+            fi
         fi
 
         # ========================================
