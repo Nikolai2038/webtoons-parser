@@ -33,13 +33,13 @@ Script was tested in WSL Debian on Windows 10. Should work on MINGW in Windows 1
     Example ([unOrdinary](https://www.webtoons.com/en/super-hero/unordinary/list?title_no=679) webtoon):
 
     ```bash
-    ./script.sh "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=" "312"
+    ./script.sh "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=" "5"
     ```
 
-    This will download first 312 episoded of unOrdinary webtoon.
+    This will download first 5 episodes of unOrdinary webtoon.
 
     After executing command, script will start to download all images into `./downloads/<title number>/img` directory (this directory will be created automatically). Images will be named `<episode_number>_<image_number>.jpg`.
 
     Additionaly, script cache all html pages inside `./downloads/<title number>/html` directory to reduce the number of requests for repeated script calls.
 
-    Script also does not download image, if it's filename exists. So if you want to redownload images - just delete them. Same for html file.
+    Script also does not download image, if it's filename exists. So if you want to redownload images - just delete them. Same for html files.
