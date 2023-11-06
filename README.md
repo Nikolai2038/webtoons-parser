@@ -36,7 +36,7 @@ Should work on MINGW in Windows 10 too, because script uses only `curl`, `sed` a
     After executing command, script will start to download all images into `./downloads/<title number>/img` directory (this directory will be created automatically).
     Images will be named `<episode number>_<image number>.jpg`.
 
-Additionaly, script cache all html pages inside `./downloads/<title number>/html` directory to reduce the number of requests for repeated script calls.
+Additionally, script cache all html pages inside `./downloads/<title number>/html` directory to reduce the number of requests for repeated script calls.
 
 Script also does not download image, if it's filename exists.
 So if you want to redownload images - just delete them.
