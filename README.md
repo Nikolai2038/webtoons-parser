@@ -28,10 +28,10 @@ Should work on MINGW in Windows 10 too, because script uses only `curl`, `sed` a
 2. Run script:
 
     ```bash
-    ./script.sh <url without episode number> <number of episodes to download>
+    ./script.sh <url with episode number> [number of episodes to download, default = 1]
     ```
 
-    To get `<url without episode number>` just open any webtoon's episode and copy URL from address bar.
+    To get `<url with episode number>` just open any webtoon's episode and copy URL from address bar.
 
     After executing command, script will start to download all images into `./downloads/<title number>/img` directory (this directory will be created automatically).
     Images will be named `<episode number>_<image number>.jpg`.
@@ -44,10 +44,10 @@ Same for html files.
 
 ## Example
 
-To download first 5 episodes of [unOrdinary](https://www.webtoons.com/en/super-hero/unordinary/list?title_no=679) webtoon we need to run:
+To download episodes 377-378 of [unOrdinary](https://www.webtoons.com/en/super-hero/unordinary/list?title_no=679) webtoon we need to run:
 
 ```bash
-./script.sh "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=" "5"
+./script.sh "https://www.webtoons.com/en/super-hero/unordinary/prologue/viewer?title_no=679&episode_no=377" "2"
 ```
 
 ## Contribution

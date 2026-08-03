@@ -7,14 +7,14 @@ DIRECTORY_WITH_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || exit "$
 IS_CONTINUE_ON_EMPTY_IMAGES_LIST_ERROR="1"
 
 function main() {
-    local url_without_episode_number="${1}" && shift
-    if [[ -z "${url_without_episode_number}" ]]; then
+    local url_with_episode_number="${1}" && shift
+    if [[ -z "${url_with_episode_number}" ]]; then
         echo "Enter URL without episode number!" >&2
         return 1
     fi
 
     local title_number
-    title_number="$(echo "${url_without_episode_number}" | sed -E 's/.*title_no=([0-9]+).*/\1/')" || return "$?"
+    title_number="$(echo "${url_with_episode_number}" | sed -E 's/.*title_no=([0-9]+).*/\1/')" || return "$?"
     if [[ -z "${title_number}" ]]; then
         echo "Can't get title_no from provided URL!" >&2
         return 1
@@ -42,9 +42,24 @@ function main() {
 
     local episodes_count="${1:-1}" && shift
 
-    local episode_number
-    for ((episode_number = 1; episode_number <= episodes_count; episode_number++)); do
-        local url="${url_without_episode_number}${episode_number}"
+    local episode_start=''
+    episode_start="${url_with_episode_number##*=}" || return "$?"
+
+    local episode_end=''
+    episode_end="$((episode_start + episodes_count - 1))" || return "$?"
+
+    local url_without_episode_number=''
+    url_without_episode_number="${url_with_episode_number%=*}" || return "$?"
+
+    if [ "${episode_start}" = "${episode_end}" ]; then
+        echo "Episode ${episode_start} will be downloaded..." >&2
+    else
+        echo "Episodes ${episode_start}-${episode_end} will be downloaded..." >&2
+    fi
+
+    local episode_number=''
+    for ((episode_number = episode_start; episode_number <= episode_end; episode_number++)); do
+        local url="${url_without_episode_number}=${episode_number}"
 
         echo -n "Episode ${episode_number}: ${url}:" >&2
 
